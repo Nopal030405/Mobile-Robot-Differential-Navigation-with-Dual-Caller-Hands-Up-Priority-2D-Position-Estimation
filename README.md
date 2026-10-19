@@ -1,0 +1,2 @@
+# Mobile-Robot-Differential-Navigation-with-Dual-Caller-Hands-Up-Priority-2D-Position-Estimation
+Repositori ini berisi implementasi sistem navigasi otonom untuk mobile robot diferensial yang mampu melayani dua pemanggil secara bergantian berbasis gestur tangan (Hands Up). Sistem memprioritaskan pemanggil dengan jarak terdekat terlebih dahulu dan menyimpan koordinat pemanggil kedua menggunakan pemetaan geometri 2D.
