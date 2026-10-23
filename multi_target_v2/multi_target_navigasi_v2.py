@@ -424,9 +424,11 @@ while True:
             })
             person_idx += 1
 
-    # Filter jarak minimum pada fase T2
+    # Filter jarak minimum HANYA pada fase ALIGN_T2 dan ROTATE_TO_T2
+    # agar T1 yang masih berdiri dekat tidak ikut dipilih sebagai T2.
+    # Saat APPROACH_T2, filter DIMATIKAN supaya T2 tidak tersingkir saat jarak < 0.85m.
     min_dist_filter = (STOP_DISTANCE + 0.15) if state in (
-        STATE_ALIGN_T2, STATE_APPROACH_T2, STATE_WAIT_HANDSDOWN_T2) else 0.0
+        STATE_ALIGN_T2, STATE_ROTATE_TO_T2) else 0.0
     valid_persons = [p for p in detected_persons if p['jarak'] > min_dist_filter]
     hands_up_cands = [p for p in valid_persons if p['gesture'] == 'hands_up']
 
@@ -547,14 +549,34 @@ while True:
             in_fine_zone   = ANGLE_THRESHOLD < abs_s <= 4.5
 
             if in_coarse_zone or in_fine_zone:
+                # Jika settle count direset (terjadi overshoot), flush angle_history
+                # agar nilai sudut tidak "lag" akibat moving average menyimpan nilai lama
+                if align_settle_count > 0:
+                    angle_history.clear()
+                    if selected_target:
+                        angle_history.append(selected_target['sudut'])
+                    smooth_sudut = selected_target['sudut'] if selected_target else 0.0
+                    curr_sudut = smooth_sudut
+                    abs_s = abs(curr_sudut)
+                    in_coarse_zone = abs_s > 4.5
+                    in_fine_zone   = ANGLE_THRESHOLD < abs_s <= 4.5
                 align_settle_count = 0
+
                 pulse_dur = COARSE_PULSE_DUR if in_coarse_zone else FINE_PULSE_DURATION
                 pause_dur = COARSE_PAUSE_DUR if in_coarse_zone else FINE_PAUSE_DURATION
                 cycle_dur = pulse_dur + pause_dur
-                t_in_cycle = (current_t - align_pulse_start) % cycle_dur
+
+                # Reset align_pulse_start setiap kali mulai pulse aktif baru
+                # agar timing siklus tidak desync saat berpindah zona
+                if not align_pulse_active:
+                    t_in_cycle = (current_t - align_pulse_start) % cycle_dur
+                else:
+                    t_in_cycle = (current_t - align_pulse_start) % cycle_dur
 
                 if t_in_cycle < pulse_dur:
                     if not align_pulse_active:
+                        # Reset timer siklus saat mulai pulse baru
+                        align_pulse_start = current_t - t_in_cycle
                         side_txt = "KIRI" if curr_sudut > 0 else "KANAN"
                         cmd_sudut = curr_sudut if in_coarse_zone else (
                             5.0 if curr_sudut > 0 else -5.0)
@@ -616,7 +638,24 @@ while True:
         lbl = "T1" if state == STATE_APPROACH_T1 else "T2"
 
         if current_t - last_stream_time >= STREAM_INTERVAL:
-            c_dist = curr_jarak if curr_jarak > 0 else last_valid_jarak
+            # Untuk T2: Saat APPROACH tidak ada filter minimum jarak, sehingga
+            # depth reading mendekati 0.7m tetap valid. Gunakan selected_target
+            # langsung jika ada, jika tidak fallback ke last_valid_jarak.
+            if state == STATE_APPROACH_T2:
+                # Ambil raw depth dari semua detected_persons (tanpa filter 0.85m)
+                t2_raw = [p for p in detected_persons if p['jarak'] > 0]
+                if t2_raw:
+                    t2_raw.sort(key=lambda p: p['jarak'])
+                    # Pilih yang paling dekat dengan jarak terakhir dikunci
+                    t2_best = min(t2_raw, key=lambda p: abs(p['jarak'] - last_valid_jarak))
+                    c_dist = t2_best['jarak']
+                    # Update last_valid_jarak agar tidak stuck di nilai lama
+                    last_valid_jarak = c_dist
+                else:
+                    c_dist = last_valid_jarak
+            else:
+                c_dist = curr_jarak if curr_jarak > 0 else last_valid_jarak
+
             if c_dist > 0 and c_dist <= STOP_DISTANCE:
                 print("\n" + "=" * 65)
                 print(f">> [FINISH {lbl} TERCAPAI!] Jarak: {c_dist:.2f} m")
@@ -770,6 +809,7 @@ while True:
                     elapsed = current_t - handsdown_start
                     handsdown_prog = min(1.0, elapsed / HANDSDOWN_HOLD)
                     if elapsed >= HANDSDOWN_HOLD:
+                        logger.record_t2_finish(STOP_DISTANCE)
                         state = STATE_ALL_FINISHED
 
     # [ALL FINISHED]

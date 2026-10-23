@@ -1,4 +1,4 @@
-Percobaan_Ke,Waktu_Mulai,Waktu_Selesai,Durasi_Total_dtk,Status_Misi,T1_Jarak_Awal_m,T1_Sudut_Awal_deg,T1_Jarak_Akhir_m,T2_Jarak_Awal_m,T2_Sudut_Awal_deg,T2_Jarak_Akhir_m,Segitiga_Cam_T1_m,Segitiga_Cam_T2_m,Segitiga_T1_T2_m,Sudut_Kamera_deg,Total_Tick_Enc_L,Total_Tick_Enc_R,Total_Jarak_Tempuh_m
+﻿Percobaan_Ke,Waktu_Mulai,Waktu_Selesai,Durasi_Total_dtk,Status_Misi,T1_Jarak_Awal_m,T1_Sudut_Awal_deg,T1_Jarak_Akhir_m,T2_Jarak_Awal_m,T2_Sudut_Awal_deg,T2_Jarak_Akhir_m,Segitiga_Cam_T1_m,Segitiga_Cam_T2_m,Segitiga_T1_T2_m,Sudut_Kamera_deg,Total_Tick_Enc_L,Total_Tick_Enc_R,Total_Jarak_Tempuh_m
 1,2026-10-13 16:09:42,2026-10-13 16:10:46,64.24,BERJALAN,1.32,-11.6,0.7,2.6,10.4,0.0,1.32,2.6,1.462,22.0,6432,6504,14.373
 2,2026-10-17 13:48:30,2026-10-17 13:50:21,111.04,BERJALAN,1.71,11.0,0.0,2.17,-8.9,0.0,1.71,2.17,0.809,19.9,1881,1667,3.942
 3,2026-10-17 13:51:38,2026-10-17 13:52:28,49.75,BERJALAN,1.65,8.4,0.0,2.07,-9.3,0.0,1.65,2.07,0.707,17.7,1934,1934,4.298
