@@ -1,0 +1,23 @@
+[2026-11-16 18:03:27] [ENV] pip freeze -> Berhasil disimpan di D:\Project\Skripsi\Mobile-Robot-Differential-Navigation-with-Dual-Caller-Hands-Up-Priority-2D-Position-Estimation\klasifikasi_gestur\hasil\log\environment.txt
+[2026-11-16 18:03:27] [LOAD_DATA] Ukuran Dataset -> 2800 baris total
+[2026-11-16 18:03:27] [EDA] Distribusi Kelas -> {1: 1400, 0: 1400}
+[2026-11-16 18:03:27] [EDA] Distribusi Subjek -> {'subjek_1': 2800}
+[2026-11-16 18:03:27] [EDA] Distribusi Jarak -> {0.5: 400, 1.0: 400, 1.5: 400, 2.0: 400, 2.5: 400, 3.0: 400, 3.5: 400}
+[2026-11-16 18:03:29] [TUNING_K] Rentang k=1..15 -> k Terbaik = 3 (Akurasi CV: 99.75%). Akurasi k=5: 99.61%. k=5 optimal: True
+[2026-11-16 18:03:30] [SPLIT_SKEMA_1] Stratified 80/20 (seed=42) -> Akurasi: 99.11%, F1-Score: 0.9911
+[2026-11-16 18:03:30] [SPLIT_SKEMA_2] Split Sekuensial Sesi Waktu -> Akurasi: 98.39%, F1: 0.9840. Split sekuensial kronologis waktu (80% awal latih, 20% akhir uji) menghasilkan akurasi 98.39% (selisih 0.71% dari acak stratified).
+[2026-11-16 18:03:30] [LEARNING_CURVE] Sampel Latih=50 -> Akurasi: 98.30% (±0.34%), F1: 0.9830
+[2026-11-16 18:03:30] [LEARNING_CURVE] Sampel Latih=100 -> Akurasi: 98.21% (±0.65%), F1: 0.9821
+[2026-11-16 18:03:30] [LEARNING_CURVE] Sampel Latih=150 -> Akurasi: 98.30% (±0.49%), F1: 0.9830
+[2026-11-16 18:03:31] [LEARNING_CURVE] Sampel Latih=200 -> Akurasi: 98.32% (±0.16%), F1: 0.9832
+[2026-11-16 18:03:31] [LEARNING_CURVE] Sampel Latih=250 -> Akurasi: 98.23% (±0.27%), F1: 0.9823
+[2026-11-16 18:03:31] [LEARNING_CURVE] Sampel Latih=320 -> Akurasi: 98.30% (±0.34%), F1: 0.9830
+[2026-11-16 18:03:31] [LEARNING_CURVE] Sampel Latih=2240 -> Akurasi: 99.11% (±0.00%), F1: 0.9911
+[2026-11-16 18:03:31] [METRIK] Akurasi -> 99.11% (Wilson 95% CI: [97.93%, 99.62%])
+[2026-11-16 18:03:31] [METRIK] Confusion Matrix -> TP=277, TN=278, FP=2, FN=3
+[2026-11-16 18:03:31] [METRIK] Hands Up (Kelas 1) -> Precision: 0.9928, Recall: 0.9893, F1: 0.9911
+[2026-11-16 18:03:31] [METRIK] No Gesture (Kelas 0) -> Precision: 0.9893, Recall: 0.9929, F1: 0.9911
+[2026-11-16 18:03:32] [JARAK] Evaluasi Per Titik Jarak -> [{'Jarak_Meter': '0.5m', 'Jumlah_Sampel': 69, 'Akurasi': 1.0, 'Precision_HandsUp': 1.0, 'Recall_HandsUp': 1.0, 'F1_HandsUp': 1.0}, {'Jarak_Meter': '1.0m', 'Jumlah_Sampel': 82, 'Akurasi': 1.0, 'Precision_HandsUp': 1.0, 'Recall_HandsUp': 1.0, 'F1_HandsUp': 1.0}, {'Jarak_Meter': '1.5m', 'Jumlah_Sampel': 77, 'Akurasi': 0.974025974025974, 'Precision_HandsUp': 0.975, 'Recall_HandsUp': 0.975, 'F1_HandsUp': 0.975}, {'Jarak_Meter': '2.0m', 'Jumlah_Sampel': 79, 'Akurasi': 0.9873417721518988, 'Precision_HandsUp': 1.0, 'Recall_HandsUp': 0.9722222222222222, 'F1_HandsUp': 0.9859154929577465}, {'Jarak_Meter': '2.5m', 'Jumlah_Sampel': 81, 'Akurasi': 0.9876543209876543, 'Precision_HandsUp': 1.0, 'Recall_HandsUp': 0.9782608695652174, 'F1_HandsUp': 0.989010989010989}, {'Jarak_Meter': '3.0m', 'Jumlah_Sampel': 90, 'Akurasi': 1.0, 'Precision_HandsUp': 1.0, 'Recall_HandsUp': 1.0, 'F1_HandsUp': 1.0}, {'Jarak_Meter': '3.5m', 'Jumlah_Sampel': 82, 'Akurasi': 0.9878048780487805, 'Precision_HandsUp': 0.975609756097561, 'Recall_HandsUp': 1.0, 'F1_HandsUp': 0.9876543209876543}]
+[2026-11-16 18:03:33] [BENCHMARK] 1000 Iterasi -> Rata-rata: 0.8607 ms (±2.0450 ms) | Est. Throughput: 1161.8 FPS
+[2026-11-16 18:03:36] [SAVE_MODEL] KNeighborsClassifier(k=5) -> Model disimpan di D:\Project\Skripsi\Mobile-Robot-Differential-Navigation-with-Dual-Caller-Hands-Up-Priority-2D-Position-Estimation\klasifikasi_gestur\model\knn_k5.pkl
+[2026-11-16 18:03:36] [SAVE_TEST] Test Set Anotasi -> Disimpan di D:\Project\Skripsi\Mobile-Robot-Differential-Navigation-with-Dual-Caller-Hands-Up-Priority-2D-Position-Estimation\klasifikasi_gestur\hasil\tabel\test_set_annotated.csv

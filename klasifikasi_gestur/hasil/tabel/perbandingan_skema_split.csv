@@ -1,0 +1,3 @@
+Skema,Akurasi,F1_Score,Keterangan
+1. Stratified Random 80/20 (Sesuai Jurnal),0.9910714285714286,0.991071400100128,Distribusi kelas seimbang pada train & test
+2. Split Blok Sesi / Subjek Independen,0.9839285714285714,0.9840036785349527,"Split sekuensial kronologis waktu (80% awal latih, 20% akhir uji) menghasilkan akurasi 98.39% (selisih 0.71% dari acak stratified)."

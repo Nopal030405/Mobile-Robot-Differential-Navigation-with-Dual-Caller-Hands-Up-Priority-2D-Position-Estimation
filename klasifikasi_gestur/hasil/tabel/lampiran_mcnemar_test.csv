@@ -1,0 +1,4 @@
+Perbandingan,"b (KNN Benar, Model Salah)","c (KNN Salah, Model Benar)",Chi2_Statistic,p_value,Signifikan_alpha_0.05
+KNN vs Gaussian Naive Bayes,28,3,18.580645161290324,1.6286575766466527e-05,True
+KNN vs Logistic Regression,75,4,62.0253164556962,3.4416913763379853e-15,True
+KNN vs Perceptron,94,3,83.50515463917526,0.0,True

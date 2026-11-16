@@ -1,0 +1,4 @@
+Rentang_Jarak,Jumlah_Sampel,Akurasi,Recall_HandsUp
+Dekat (<1.0m),0,1.0,1.0
+Sedang (1.0-2.0m),80,0.95,0.925
+Jauh (>2.0m),0,1.0,1.0

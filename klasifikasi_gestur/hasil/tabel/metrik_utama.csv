@@ -1,0 +1,15 @@
+Metrik,Nilai,Keterangan
+Akurasi Keseluruhan,0.9910714285714286,"Wilson 95% CI: [0.9793, 0.9962]"
+True Positives (TP),277.0,Hands Up benar terdeteksi
+True Negatives (TN),278.0,No Gesture benar terdeteksi
+False Positives (FP),2.0,No Gesture salah diprediksi Hands Up
+False Negatives (FN),3.0,Hands Up gagal terdeteksi
+Precision - Kelas 1 (Hands Up),0.992831541218638,
+Recall - Kelas 1 (Hands Up),0.9892857142857143,
+F1-Score - Kelas 1 (Hands Up),0.9910554561717353,
+Precision - Kelas 0 (No Gesture),0.9893238434163701,
+Recall - Kelas 0 (No Gesture),0.9928571428571429,
+F1-Score - Kelas 0 (No Gesture),0.9910873440285205,
+Weighted Precision,0.9910776923175041,Rata-rata terbobot
+Weighted Recall,0.9910714285714286,Rata-rata terbobot
+Weighted F1-Score,0.991071400100128,Rata-rata terbobot
