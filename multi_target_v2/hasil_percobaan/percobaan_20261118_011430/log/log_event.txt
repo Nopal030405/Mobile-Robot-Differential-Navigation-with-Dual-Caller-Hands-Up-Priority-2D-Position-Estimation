@@ -1,0 +1,3 @@
+[01:14:30.746] [SISTEM] Sesi percobaan dimulai. Folder: D:\Project\Skripsi\Mobile-Robot-Differential-Navigation-with-Dual-Caller-Hands-Up-Priority-2D-Position-Estimation\multi_target_v2\hasil_percobaan\percobaan_20261118_011430
+[01:14:30.748] [MODEL] KNN v3: knn_k5.pkl (2800 sampel — semua variasi gesture)
+[01:14:46.037] [AKHIR] Sesi selesai. Durasi: 15.29s | Status: BERJALAN

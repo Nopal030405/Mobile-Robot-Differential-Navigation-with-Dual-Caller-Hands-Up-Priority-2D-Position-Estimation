@@ -1,0 +1,22 @@
+[01:50:47.831] [SISTEM] Sesi percobaan dimulai. Folder: D:\Project\Skripsi\Mobile-Robot-Differential-Navigation-with-Dual-Caller-Hands-Up-Priority-2D-Position-Estimation\multi_target_v2\hasil_percobaan\percobaan_20261118_015047
+[01:50:47.831] [MODEL] KNN v3: knn_k5.pkl (2800 sampel — semua variasi gesture)
+[01:50:49.988] [FOTO] Tersimpan: foto/dual_detect_mulai_01.png
+[01:50:53.774] [FOTO] Tersimpan: foto/dual_detect_mulai_02.png
+[01:50:57.823] [FOTO] Tersimpan: foto/dual_detect_mulai_03.png
+[01:51:13.998] [FOTO] Tersimpan: foto/dual_detect_mulai_04.png
+[01:51:22.213] [FOTO] Tersimpan: foto/dual_detect_mulai_05.png
+[01:51:35.691] [FOTO] Tersimpan: foto/dual_detect_mulai_06.png
+[01:51:37.743] [KUNCI] T1=1.88m sudut=+12.8° | T2=3.42m sudut=-10.8°
+[01:51:37.755] [SEGITIGA] Cam→T1=1.88m | Cam→T2=3.42m | T1→T2=1.86m | Sudut@Cam=23.6°
+[01:51:37.766] [FOTO] Tersimpan: foto/kunci_koordinat_01.png
+[01:51:39.838] [FOTO] Tersimpan: foto/statelock_t1_01.png
+[01:51:47.211] [FOTO] Tersimpan: foto/tiba_t1_01.png
+[01:51:51.688] [T1_SELESAI] Robot tiba di T1. Jarak akhir: 0.70 m
+[01:51:51.707] [FOTO] Tersimpan: foto/t1_selesai_01.png
+[01:51:51.820] [FOTO] Tersimpan: foto/rotasi_ke_t2_01.png
+[01:51:55.498] [FOTO] Tersimpan: foto/statelock_t2_01.png
+[01:52:05.773] [FOTO] Tersimpan: foto/tiba_t2_01.png
+[01:52:08.007] [T2_SELESAI] Robot tiba di T2. Jarak akhir: 0.70 m
+[01:52:08.007] [MISI] SEMUA TARGET BERHASIL DIKUNJUNGI!
+[01:52:08.009] [FOTO] Tersimpan: foto/misi_selesai_01.png
+[01:53:56.780] [AKHIR] Sesi selesai. Durasi: 188.95s | Status: SUKSES

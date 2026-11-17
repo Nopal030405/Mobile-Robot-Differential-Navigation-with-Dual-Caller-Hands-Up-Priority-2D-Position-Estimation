@@ -1,0 +1,36 @@
+============================================================
+ RINGKASAN PERCOBAAN NAVIGASI MULTI-TARGET v3
+============================================================
+ Status Misi      : SUKSES
+ Waktu Mulai      : 2026-11-18 01:59:34
+ Waktu Selesai    : 2026-11-18 02:01:00
+ Durasi Total     : 85.87 detik
+ Total Frame Log  : 582 sampel
+------------------------------------------------------------
+ DATA TARGET
+ T1 Jarak Awal    : 3.17 m
+ T1 Sudut Awal    : -20.8°
+ T1 Jarak Akhir   : 0.70 m
+ T2 Jarak Awal    : 4.55 m
+ T2 Sudut Awal    : -2.1°
+ T2 Jarak Akhir   : 0.70 m
+------------------------------------------------------------
+ PEMETAAN SEGITIGA 2D
+ Cam → T1         : 3.170 m
+ Cam → T2         : 4.550 m
+ T1  → T2         : 1.851 m
+ Sudut @Kamera    : 18.70°
+ T1 (x,y)         : (-1.126, 2.963) m
+ T2 (x,y)         : (-0.167, 4.547) m
+------------------------------------------------------------
+ ODOMETRI ENCODER
+ Encoder Kiri     : 31707 tick
+ Encoder Kanan    : 31611 tick
+ Estimasi Tempuh  : 70.353 m
+============================================================
+ File Output:
+  log/log_frame.csv
+  log/log_event.txt
+  foto/*.png
+  grafik/grafik_rekap.png
+============================================================
