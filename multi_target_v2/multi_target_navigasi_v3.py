@@ -425,7 +425,11 @@ print("   Model KNN: knn_k5.pkl — 2800 sampel (semua variasi gesture)")
 print("   Output   : hasil_percobaan/percobaan_YYYYMMDD_HHMMSS/")
 print("=" * 65)
 
-esp32 = ESP32Controller(port='COM5', baudrate=115200)
+# Auto-detect COM port aktif ESP32 (default: COM9)
+import serial.tools.list_ports
+_ports = [p.device for p in serial.tools.list_ports.comports()]
+_default_port = _ports[0] if _ports else 'COM9'
+esp32 = ESP32Controller(port=_default_port, baudrate=115200)
 
 print("Memuat YOLOv8n dan Model KNN v3 (knn_k5.pkl)...")
 yolo_model = YOLO('yolov8n.pt')

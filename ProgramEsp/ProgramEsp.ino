@@ -96,6 +96,18 @@ void loop() {
       sudut1 = getValue(incomingData, ',', 1).substring(3).toFloat();
       lastDataTime = millis();
     }
+    else if (incomingData.startsWith("TEST_L:")) {
+      int spdL = incomingData.substring(7).toInt();
+      driveMotors(spdL, 0);
+      lastDataTime = millis();
+      return;
+    }
+    else if (incomingData.startsWith("TEST_R:")) {
+      int spdR = incomingData.substring(7).toInt();
+      driveMotors(0, spdR);
+      lastDataTime = millis();
+      return;
+    }
   }
 
   // 1b. KIRIM TELEMETRI ENCODER KE PYTHON (TIAP 100MS)
