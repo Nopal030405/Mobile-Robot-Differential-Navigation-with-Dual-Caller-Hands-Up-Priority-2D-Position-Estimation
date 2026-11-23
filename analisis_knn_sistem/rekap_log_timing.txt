@@ -1,0 +1,117 @@
+Percobaan #1 (percobaan_20261118_011430):
+  Waktu Mulai         : 01:14:30.746
+  Waktu Lock          : -
+  Waktu T1 Selesai    : -
+  Waktu T2 Selesai    : -
+  Durasi DUAL_DETECT  : - s
+  Durasi Navigasi Murni: - s (Jurnal: - s, Selisih: - s)
+  Durasi Total Sesi   : 15.29 s
+  Trigger Dual Detect : 0 kali
+  Durasi WAIT_T1 (CSV): 0.0 s
+  Durasi WAIT_T2 (CSV): 0.0 s
+  Frame Counts by State: {'DUAL_DETECT': 71}
+
+Percobaan #2 (percobaan_20261118_014632):
+  Waktu Mulai         : 01:46:32.268
+  Waktu Lock          : 01:50:14.382
+  Waktu T1 Selesai    : 01:50:24.968
+  Waktu T2 Selesai    : 01:50:43.206
+  Durasi DUAL_DETECT  : 222.11 s
+  Durasi Navigasi Murni: 28.82 s (Jurnal: 28.8 s, Selisih: 0.02 s)
+  Durasi Total Sesi   : 254.45 s
+  Trigger Dual Detect : 6 kali
+  Durasi WAIT_T1 (CSV): 1.58 s
+  Durasi WAIT_T2 (CSV): 7.7 s
+  Frame Counts by State: {'DUAL_DETECT': 1352, 'APPROACH_T1': 50, 'WAIT_T2': 48, 'APPROACH_T2': 42, 'ALL_FINISHED': 23, 'ALIGN_T2': 17, 'ALIGN_T1': 12, 'WAIT_T1': 12, 'ROTATE_TO_T2': 2}
+
+Percobaan #3 (percobaan_20261118_015047):
+  Waktu Mulai         : 01:50:47.831
+  Waktu Lock          : 01:51:37.743
+  Waktu T1 Selesai    : 01:51:51.688
+  Waktu T2 Selesai    : 01:52:08.007
+  Durasi DUAL_DETECT  : 49.91 s
+  Durasi Navigasi Murni: 30.26 s (Jurnal: 30.3 s, Selisih: -0.04 s)
+  Durasi Total Sesi   : 188.95 s
+  Trigger Dual Detect : 6 kali
+  Durasi WAIT_T1 (CSV): 4.38 s
+  Durasi WAIT_T2 (CSV): 2.14 s
+  Frame Counts by State: {'ALL_FINISHED': 825, 'DUAL_DETECT': 394, 'APPROACH_T2': 62, 'APPROACH_T1': 47, 'WAIT_T1': 28, 'ALIGN_T2': 25, 'ALIGN_T1': 16, 'WAIT_T2': 13, 'ROTATE_TO_T2': 3}
+
+Percobaan #4 (percobaan_20261118_015357):
+  Waktu Mulai         : 01:53:57.968
+  Waktu Lock          : 01:54:00.098
+  Waktu T1 Selesai    : 01:54:13.220
+  Waktu T2 Selesai    : 01:54:23.374
+  Durasi DUAL_DETECT  : 2.13 s
+  Durasi Navigasi Murni: 23.28 s (Jurnal: 23.3 s, Selisih: -0.02 s)
+  Durasi Total Sesi   : 29.57 s
+  Trigger Dual Detect : 1 kali
+  Durasi WAIT_T1 (CSV): 3.44 s
+  Durasi WAIT_T2 (CSV): 2.22 s
+  Frame Counts by State: {'APPROACH_T1': 55, 'ALL_FINISHED': 26, 'ALIGN_T2': 25, 'APPROACH_T2': 23, 'WAIT_T1': 21, 'ALIGN_T1': 19, 'DUAL_DETECT': 15, 'WAIT_T2': 14, 'ROTATE_TO_T2': 3}
+
+Percobaan #5 (percobaan_20261118_015429):
+  Waktu Mulai         : 01:54:29.057
+  Waktu Lock          : 01:55:02.440
+  Waktu T1 Selesai    : 01:55:13.433
+  Waktu T2 Selesai    : 01:55:30.536
+  Durasi DUAL_DETECT  : 33.38 s
+  Durasi Navigasi Murni: 28.1 s (Jurnal: 28.1 s, Selisih: -0.0 s)
+  Durasi Total Sesi   : 64.09 s
+  Trigger Dual Detect : 11 kali
+  Durasi WAIT_T1 (CSV): 1.51 s
+  Durasi WAIT_T2 (CSV): 2.46 s
+  Frame Counts by State: {'DUAL_DETECT': 214, 'APPROACH_T2': 63, 'APPROACH_T1': 44, 'ROTATE_TO_T2': 21, 'ALIGN_T2': 21, 'ALIGN_T1': 20, 'WAIT_T2': 20, 'ALL_FINISHED': 18, 'WAIT_T1': 12}
+
+Percobaan #6 (percobaan_20261118_015534):
+  Waktu Mulai         : 01:55:34.532
+  Waktu Lock          : 01:56:05.430
+  Waktu T1 Selesai    : 01:56:17.511
+  Waktu T2 Selesai    : 01:56:34.883
+  Durasi DUAL_DETECT  : 30.9 s
+  Durasi Navigasi Murni: 29.45 s (Jurnal: 29.5 s, Selisih: -0.05 s)
+  Durasi Total Sesi   : 115.03 s
+  Trigger Dual Detect : 2 kali
+  Durasi WAIT_T1 (CSV): 2.23 s
+  Durasi WAIT_T2 (CSV): 2.61 s
+  Frame Counts by State: {'ALL_FINISHED': 382, 'DUAL_DETECT': 190, 'APPROACH_T2': 71, 'APPROACH_T1': 47, 'WAIT_T2': 21, 'ALIGN_T2': 20, 'ALIGN_T1': 18, 'WAIT_T1': 18, 'ROTATE_TO_T2': 15}
+
+Percobaan #7 (percobaan_20261118_015731):
+  Waktu Mulai         : 01:57:31.922
+  Waktu Lock          : 01:57:37.159
+  Waktu T1 Selesai    : 01:57:49.806
+  Waktu T2 Selesai    : 01:58:08.403
+  Durasi DUAL_DETECT  : 5.24 s
+  Durasi Navigasi Murni: 31.24 s (Jurnal: 31.2 s, Selisih: 0.04 s)
+  Durasi Total Sesi   : 64.53 s
+  Trigger Dual Detect : 1 kali
+  Durasi WAIT_T1 (CSV): 2.16 s
+  Durasi WAIT_T2 (CSV): 2.16 s
+  Frame Counts by State: {'ALL_FINISHED': 203, 'APPROACH_T2': 69, 'APPROACH_T1': 65, 'ALIGN_T2': 31, 'DUAL_DETECT': 28, 'WAIT_T1': 18, 'WAIT_T2': 17, 'ALIGN_T1': 11, 'ROTATE_TO_T2': 11}
+
+Percobaan #8 (percobaan_20261118_015837):
+  Waktu Mulai         : 01:58:37.800
+  Waktu Lock          : 01:58:53.073
+  Waktu T1 Selesai    : 01:59:11.602
+  Waktu T2 Selesai    : 01:59:28.554
+  Durasi DUAL_DETECT  : 15.27 s
+  Durasi Navigasi Murni: 35.48 s (Jurnal: 35.5 s, Selisih: -0.02 s)
+  Durasi Total Sesi   : 55.75 s
+  Trigger Dual Detect : 3 kali
+  Durasi WAIT_T1 (CSV): 9.52 s
+  Durasi WAIT_T2 (CSV): 1.53 s
+  Frame Counts by State: {'DUAL_DETECT': 94, 'WAIT_T1': 66, 'ALIGN_T2': 59, 'APPROACH_T2': 41, 'APPROACH_T1': 39, 'ALL_FINISHED': 37, 'ALIGN_T1': 18, 'WAIT_T2': 13, 'ROTATE_TO_T2': 4}
+
+Percobaan #9 (percobaan_20261118_015934):
+  Waktu Mulai         : 01:59:34.848
+  Waktu Lock          : 02:00:08.516
+  Waktu T1 Selesai    : 02:00:23.381
+  Waktu T2 Selesai    : 02:00:58.740
+  Durasi DUAL_DETECT  : 33.67 s
+  Durasi Navigasi Murni: 50.22 s (Jurnal: 50.2 s, Selisih: 0.02 s)
+  Durasi Total Sesi   : 85.87 s
+  Trigger Dual Detect : 6 kali
+  Durasi WAIT_T1 (CSV): 1.55 s
+  Durasi WAIT_T2 (CSV): 2.09 s
+  Frame Counts by State: {'DUAL_DETECT': 220, 'ALIGN_T2': 153, 'APPROACH_T1': 81, 'APPROACH_T2': 70, 'WAIT_T1': 13, 'WAIT_T2': 13, 'ROTATE_TO_T2': 12, 'ALL_FINISHED': 12, 'ALIGN_T1': 8}
+

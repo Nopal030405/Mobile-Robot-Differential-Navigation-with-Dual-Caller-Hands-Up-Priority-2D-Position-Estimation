@@ -1,0 +1,10 @@
+status_mesin,label_diharapkan,total_orang_terdeteksi,dinilai_visual,cocok,tidak_cocok,tidak_dapat_dinilai
+dual_detect_mulai,HANDS_UP,66,43,43,0,23
+kunci_koordinat,HANDS_UP,17,14,14,0,3
+statelock_t1,HANDS_UP,17,10,10,0,7
+tiba_t1,HANDS_UP,8,4,4,0,4
+t1_selesai,NO_GESTURE,9,0,0,0,9
+rotasi_ke_t2,HANDS_UP,10,0,0,0,10
+statelock_t2,HANDS_UP,13,7,7,0,6
+tiba_t2,HANDS_UP,8,4,4,0,4
+misi_selesai,NO_GESTURE,8,1,1,0,7
