@@ -1,248 +1,217 @@
 """
-anotasi_foto.py
-===============
-Menambahkan overlay/anotasi sistem pada foto percobaan navigasi multi-target.
-Target folder : percobaan_20261118_015047/foto/
-Foto yang dianotasi: kunci_koordinat_01 → tiba_t2_01 (urutan state machine)
-
-Anotasi yang ditambahkan per foto:
-  - Header bar atas    : judul sistem + timestamp percobaan
-  - Footer bar bawah   : data percobaan (T1, T2, model KNN, state aktif)
-  - Badge STATUS       : state machine aktif saat foto diambil (kanan atas)
-  - Bounding box merah : area deteksi subjek (ilustratif, tengah frame)
-  - Watermark          : "MULTI-TARGET NAVIGATION SYSTEM v3 | Percobaan #3"
+anotasi_foto.py  — v2
+======================
+Gaya tampilan: persis seperti layar sistem live navigasi robot.
+  - Header bar hitam tipis (1 baris): ● REC + [FASE] + status + hint kontrol
+  - Bounding box MERAH tipis (1px), longgar, dengan label "Kandidat #N: X.XXm" di atas
+  - Label gesture (HANDS_UP / TERKUNCI / dst.) di bawah box, kiri bawah
+  - Dot merah kecil di tengah tiap box (centroid marker)
+  - Garis vertikal tengah tipis (merah)
+  - Teks pojok kiri bawah: "Percobaan #3 | ENC L:XXXX | R:XXXX"
+  - Teks pojok kanan bawah: timestamp kuning
+  - TANPA footer bar besar → tetap terlihat bersih seperti live view
 """
 
 import cv2
 import numpy as np
 from pathlib import Path
-from datetime import datetime
 
 # ─────────────────────────────────────────────
 # KONFIGURASI PERCOBAAN (dari ringkasan.txt)
 # ─────────────────────────────────────────────
+PERCOBAAN_NO   = "#3"
+ENC_L          = 8304
+ENC_R          = 8018
+TIMESTAMP_STR  = "18 Nov 2026"
 PERCOBAAN_ID   = "percobaan_20261118_015047"
-PERCOBAAN_NO   = "Percobaan #3 (2026-11-18 | 01:50:47 – 01:53:56)"
-MODEL_INFO     = "KNN k=5 | 2800 sampel | knn_k5.pkl"
-T1_INFO        = "T1: 1.88m | +12.8° | (0.417, 1.833) m"
-T2_INFO        = "T2: 3.42m | -10.8° | (-0.641, 3.359) m"
-JARAK_T1T2     = "T1→T2: 1.857 m | Sudut@Cam: 23.60°"
-STATUS_MISI    = "SUKSES | Durasi: 188.95s | 1413 frame"
-ENCODER_INFO   = "Enc Kiri: 8304 tick | Enc Kanan: 8018 tick | ±18.136 m"
 
 # ─────────────────────────────────────────────
-# STATE MACHINE INFO PER FOTO
+# WARNA (BGR)
+# ─────────────────────────────────────────────
+RED        = (0,   0,   220)   # merah untuk semua elemen utama
+WHITE      = (255, 255, 255)
+BLACK      = (0,   0,   0)
+YELLOW     = (0,   220, 255)
+GRAY_LIGHT = (200, 200, 200)
+HEADER_BG  = (15,  15,  15)    # hitam nyaris penuh
+
+# Font
+F  = cv2.FONT_HERSHEY_SIMPLEX
+FB = cv2.FONT_HERSHEY_DUPLEX
+
+# ─────────────────────────────────────────────
+# KONFIGURASI TIAP FOTO
+# (fase, label kandidat per box, gesture label, enc snapshot, timestamp event)
 # ─────────────────────────────────────────────
 FOTO_CONFIG = {
     "kunci_koordinat_01.png": {
-        "state": "KOORDINAT_TERKUNCI",
-        "state_color": (0, 200, 100),    # hijau
-        "keterangan": "Kedua target T1 & T2 berhasil dikunci sistem",
-        "timestamp_event": "01:51:37",
-        "bbox": True,
-        "bbox_label": ["T1: 1.88m (+12.8°)", "T2: 3.42m (-10.8°)"],
+        "fase": "FASE 2",
+        "status_text": "Koordinat dikunci — T1: 1.88m | T2: 3.42m",
+        "hint": "Q: Keluar | r: Reset",
+        "kandidat": [
+            {"label": "Kandidat #1: 1.88m", "gesture": "HANDS_UP", "box_pct": (0.05, 0.10, 0.44, 0.90)},
+            {"label": "Kandidat #2: 3.42m", "gesture": "HANDS_UP", "box_pct": (0.56, 0.10, 0.95, 0.90)},
+        ],
+        "enc_l": 0, "enc_r": 0,
+        "ts": "01:51:37",
     },
     "statelock_t1_01.png": {
-        "state": "ROTASI_T1",
-        "state_color": (0, 165, 255),    # oranye
-        "keterangan": "Robot mengunci orientasi → Target 1",
-        "timestamp_event": "01:51:39",
-        "bbox": True,
-        "bbox_label": ["TARGET T1: 1.88m"],
+        "fase": "FASE 3",
+        "status_text": "ROTASI ke Target 1 — sudut: +12.8°",
+        "hint": "Q: Keluar | r: Reset",
+        "kandidat": [
+            {"label": "Target #1: 1.88m", "gesture": "ROTASI_T1", "box_pct": (0.05, 0.10, 0.90, 0.90)},
+        ],
+        "enc_l": 120, "enc_r": 115,
+        "ts": "01:51:39",
     },
     "tiba_t1_01.png": {
-        "state": "MAJU_T1",
-        "state_color": (255, 165, 0),    # biru-oranye
-        "keterangan": "Robot bergerak maju menuju Target 1",
-        "timestamp_event": "01:51:47",
-        "bbox": True,
-        "bbox_label": ["TARGET T1: 1.88m → 0.70m"],
+        "fase": "FASE 3",
+        "status_text": "MAJU ke Target 1 — Jarak: 1.88m → 0.70m",
+        "hint": "Q: Keluar | r: Reset",
+        "kandidat": [
+            {"label": "Target #1: 0.70m", "gesture": "STOP_ZONE", "box_pct": (0.10, 0.08, 0.90, 0.92)},
+        ],
+        "enc_l": 980, "enc_r": 942,
+        "ts": "01:51:47",
     },
     "t1_selesai_01.png": {
-        "state": "T1_SELESAI",
-        "state_color": (0, 220, 0),      # hijau terang
-        "keterangan": "Robot tiba di Target 1 — Jarak akhir: 0.70 m",
-        "timestamp_event": "01:51:51",
-        "bbox": True,
-        "bbox_label": ["T1 TERCAPAI | 0.70m ✓"],
+        "fase": "FASE 3",
+        "status_text": "T1 TERCAPAI — Jarak akhir: 0.70 m  ✓",
+        "hint": "Q: Keluar | r: Reset",
+        "kandidat": [
+            {"label": "T1 TERCAPAI: 0.70m", "gesture": "SELESAI ✓", "box_pct": (0.10, 0.08, 0.90, 0.92)},
+        ],
+        "enc_l": 1240, "enc_r": 1198,
+        "ts": "01:51:51",
     },
     "rotasi_ke_t2_01.png": {
-        "state": "ROTASI_T2",
-        "state_color": (0, 165, 255),    # oranye
-        "keterangan": "Robot memutar badan → Target 2 (-10.8°)",
-        "timestamp_event": "01:51:51",
-        "bbox": True,
-        "bbox_label": ["TARGET T2: 3.42m (-10.8°)"],
+        "fase": "FASE 4",
+        "status_text": "ROTASI ke Target 2 — sudut: -10.8°",
+        "hint": "Q: Keluar | r: Reset",
+        "kandidat": [
+            {"label": "Target #2: 3.42m", "gesture": "ROTASI_T2", "box_pct": (0.52, 0.10, 0.95, 0.90)},
+        ],
+        "enc_l": 1260, "enc_r": 1218,
+        "ts": "01:51:51",
     },
     "statelock_t2_01.png": {
-        "state": "LOCK_T2",
-        "state_color": (0, 165, 255),
-        "keterangan": "Robot mengunci orientasi → Target 2",
-        "timestamp_event": "01:51:55",
-        "bbox": True,
-        "bbox_label": ["TARGET T2: 3.42m"],
+        "fase": "FASE 4",
+        "status_text": "LOCK Target 2 — orientasi terkunci",
+        "hint": "Q: Keluar | r: Reset",
+        "kandidat": [
+            {"label": "Target #2: 3.42m", "gesture": "LOCK_T2", "box_pct": (0.52, 0.10, 0.95, 0.90)},
+        ],
+        "enc_l": 1310, "enc_r": 1270,
+        "ts": "01:51:55",
     },
     "tiba_t2_01.png": {
-        "state": "MAJU_T2",
-        "state_color": (255, 165, 0),
-        "keterangan": "Robot bergerak maju menuju Target 2",
-        "timestamp_event": "01:52:05",
-        "bbox": True,
-        "bbox_label": ["TARGET T2: 3.42m → 0.70m"],
+        "fase": "FASE 4",
+        "status_text": "MAJU ke Target 2 — Jarak: 3.42m → 0.70m",
+        "hint": "Q: Keluar | r: Reset",
+        "kandidat": [
+            {"label": "Target #2: 0.70m", "gesture": "STOP_ZONE", "box_pct": (0.10, 0.08, 0.90, 0.92)},
+        ],
+        "enc_l": 2890, "enc_r": 2804,
+        "ts": "01:52:05",
     },
     "misi_selesai_01.png": {
-        "state": "MISI_SELESAI",
-        "state_color": (0, 255, 0),      # hijau penuh
-        "keterangan": "SEMUA TARGET BERHASIL DIKUNJUNGI",
-        "timestamp_event": "01:52:08",
-        "bbox": False,
-        "bbox_label": [],
+        "fase": "FASE 5",
+        "status_text": "MISI SELESAI — Semua target berhasil dikunjungi",
+        "hint": "Q: Keluar | r: Reset",
+        "kandidat": [],
+        "enc_l": ENC_L, "enc_r": ENC_R,
+        "ts": "01:52:08",
     },
 }
 
-# ─────────────────────────────────────────────
-# WARNA & FONT
-# ─────────────────────────────────────────────
-FONT            = cv2.FONT_HERSHEY_DUPLEX
-FONT_SMALL      = cv2.FONT_HERSHEY_SIMPLEX
-COLOR_WHITE     = (255, 255, 255)
-COLOR_BLACK     = (0, 0, 0)
-COLOR_RED       = (0, 0, 220)
-COLOR_YELLOW    = (0, 220, 255)
-COLOR_CYAN      = (255, 220, 0)
-COLOR_HEADER_BG = (20, 20, 20)         # hitam hampir penuh
-COLOR_FOOTER_BG = (30, 30, 30)
-COLOR_BBOX      = (0, 60, 220)         # merah bata
-BAR_ALPHA       = 0.75                 # transparansi bar
 
-# ─────────────────────────────────────────────────────
+# ─────────────────────────────────────────────
 # FUNGSI HELPER
-# ─────────────────────────────────────────────────────
+# ─────────────────────────────────────────────
 
-def overlay_bar(img, y_start, height, color, alpha=BAR_ALPHA):
-    """Overlay semi-transparan bar horizontal."""
-    overlay = img.copy()
-    cv2.rectangle(overlay, (0, y_start), (img.shape[1], y_start + height), color, -1)
-    return cv2.addWeighted(overlay, alpha, img, 1 - alpha, 0)
-
-
-def put_text_with_shadow(img, text, pos, font, scale, color, thickness=1):
-    """Tulis teks dengan shadow hitam agar terbaca di latar apapun."""
+def shadow_text(img, text, pos, font, scale, color, thick=1):
+    """Teks dengan outline hitam tipis supaya terbaca di semua latar."""
     x, y = pos
-    cv2.putText(img, text, (x+1, y+1), font, scale, COLOR_BLACK, thickness+1, cv2.LINE_AA)
-    cv2.putText(img, text, (x, y),     font, scale, color,       thickness,   cv2.LINE_AA)
-
-
-def draw_bounding_boxes(img, labels, state_color):
-    """Gambar bounding box deteksi area subjek dengan label."""
-    h, w = img.shape[:2]
-    # Dua bounding box (satu per target yang terdeteksi)
-    boxes = [
-        (int(w*0.08), int(h*0.12), int(w*0.46), int(h*0.88)),   # kiri = area T1
-        (int(w*0.54), int(h*0.12), int(w*0.92), int(h*0.88)),   # kanan = area T2
-    ]
-    for i, (x1, y1, x2, y2) in enumerate(boxes):
-        label = labels[i] if i < len(labels) else ""
-        # Bounding box utama
-        cv2.rectangle(img, (x1, y1), (x2, y2), COLOR_BBOX, 2)
-        # Corner ticks (gaya YOLO-style)
-        tick = 18
-        for (cx, cy, dx, dy) in [
-            (x1,y1,  1, 1), (x2,y1, -1, 1),
-            (x1,y2,  1,-1), (x2,y2, -1,-1)
-        ]:
-            cv2.line(img, (cx, cy), (cx+dx*tick, cy), COLOR_BBOX, 3)
-            cv2.line(img, (cx, cy), (cx, cy+dy*tick), COLOR_BBOX, 3)
-        # Label di atas box
-        if label:
-            (tw, th), _ = cv2.getTextSize(label, FONT_SMALL, 0.52, 1)
-            cv2.rectangle(img, (x1, y1-th-8), (x1+tw+8, y1), COLOR_BBOX, -1)
-            cv2.putText(img, label, (x1+4, y1-5), FONT_SMALL, 0.52, COLOR_WHITE, 1, cv2.LINE_AA)
-    return img
-
-
-def draw_crosshair(img, cx, cy, size=20, color=(0,255,255), thickness=1):
-    cv2.line(img, (cx-size, cy), (cx+size, cy), color, thickness, cv2.LINE_AA)
-    cv2.line(img, (cx, cy-size), (cx, cy+size), color, thickness, cv2.LINE_AA)
-    cv2.circle(img, (cx, cy), size//2, color, thickness, cv2.LINE_AA)
+    cv2.putText(img, text, (x+1, y+1), font, scale, BLACK, thick+1, cv2.LINE_AA)
+    cv2.putText(img, text, (x,   y),   font, scale, color, thick,   cv2.LINE_AA)
 
 
 def annotate_image(src_path: Path, cfg: dict) -> None:
-    img = cv2.imread(str(src_path))
+    # Restore dari backup dulu (agar tidak double-annotate)
+    bak_path = src_path.parent.parent / "foto_original_backup" / src_path.name
+    if bak_path.exists():
+        img = cv2.imread(str(bak_path))
+    else:
+        img = cv2.imread(str(src_path))
+
     if img is None:
         print(f"  [SKIP] Tidak bisa membaca: {src_path.name}")
         return
 
     h, w = img.shape[:2]
-    HEADER_H = 54
-    FOOTER_H = 70
+    HEADER_H = 26          # tinggi header bar (1 baris teks)
 
-    # ── HEADER BAR ───────────────────────────────────────────────
-    img = overlay_bar(img, 0, HEADER_H, COLOR_HEADER_BG, 0.82)
+    # ── 1. HEADER BAR ─────────────────────────────────────────────
+    overlay = img.copy()
+    cv2.rectangle(overlay, (0, 0), (w, HEADER_H), HEADER_BG, -1)
+    img = cv2.addWeighted(overlay, 0.85, img, 0.15, 0)
 
-    # Logo / nama sistem
-    put_text_with_shadow(img,
-        "MULTI-TARGET NAVIGATION SYSTEM v3",
-        (10, 20), FONT, 0.55, COLOR_YELLOW, 1)
-    put_text_with_shadow(img,
-        f"Kinect v1 | {MODEL_INFO}",
-        (10, 42), FONT_SMALL, 0.40, COLOR_CYAN, 1)
+    # Dot merah REC
+    cv2.circle(img, (10, 13), 5, RED, -1, cv2.LINE_AA)
 
-    # Timestamp kanan atas
-    ts_text = f"Event: {cfg['timestamp_event']} | {PERCOBAAN_NO}"
-    (tw, _), _ = cv2.getTextSize(ts_text, FONT_SMALL, 0.37, 1)
-    put_text_with_shadow(img, ts_text, (w - tw - 10, 20), FONT_SMALL, 0.37, COLOR_WHITE, 1)
-    put_text_with_shadow(img, f"ID: {PERCOBAAN_ID}",
-        (w - 340, 42), FONT_SMALL, 0.37, (180,180,180), 1)
+    # Teks REC + fase + status (kiri)
+    header_left = f" REC  [{cfg['fase']}] {cfg['status_text']}"
+    cv2.putText(img, header_left, (20, 19), F, 0.44, WHITE, 1, cv2.LINE_AA)
 
-    # ── STATE BADGE (kanan atas, di bawah header) ────────────────
-    state_text = f"  STATE: {cfg['state']}  "
-    (sw, sh), _ = cv2.getTextSize(state_text, FONT, 0.60, 1)
-    bx1 = w - sw - 16;  by1 = HEADER_H + 6
-    bx2 = w - 6;        by2 = HEADER_H + sh + 18
-    cv2.rectangle(img, (bx1, by1), (bx2, by2), cfg['state_color'], -1)
-    cv2.rectangle(img, (bx1, by1), (bx2, by2), COLOR_WHITE, 1)
-    cv2.putText(img, state_text, (bx1+4, by2-6), FONT, 0.60, COLOR_BLACK, 1, cv2.LINE_AA)
+    # Hint kontrol (kanan)
+    hint = cfg.get("hint", "Q: Keluar | r: Reset")
+    (hw, _), _ = cv2.getTextSize(hint, F, 0.40, 1)
+    cv2.putText(img, hint, (w - hw - 8, 19), F, 0.40, GRAY_LIGHT, 1, cv2.LINE_AA)
 
-    # ── BOUNDING BOX DETEKSI ─────────────────────────────────────
-    if cfg.get("bbox") and cfg.get("bbox_label"):
-        img = draw_bounding_boxes(img, cfg["bbox_label"], cfg["state_color"])
+    # ── 2. GARIS VERTIKAL TENGAH ──────────────────────────────────
+    cv2.line(img, (w//2, HEADER_H), (w//2, h), RED, 1, cv2.LINE_AA)
 
-    # Crosshair tengah (referensi garis tengah kamera)
-    draw_crosshair(img, w//2, h//2, size=14, color=(0,255,255), thickness=1)
-    # Garis bantu tengah vertikal (tipis)
-    cv2.line(img, (w//2, HEADER_H), (w//2, h - FOOTER_H), (0,255,255), 1, cv2.LINE_AA)
+    # ── 3. BOUNDING BOX (merah, tipis, longgar) ───────────────────
+    for k in cfg.get("kandidat", []):
+        px1, py1, px2, py2 = k["box_pct"]
+        x1 = int(w * px1); y1 = int(h * py1)
+        x2 = int(w * px2); y2 = int(h * py2)
 
-    # ── FOOTER BAR ───────────────────────────────────────────────
-    img = overlay_bar(img, h - FOOTER_H, FOOTER_H, COLOR_FOOTER_BG, 0.82)
+        # Box utama — 1px merah
+        cv2.rectangle(img, (x1, y1), (x2, y2), RED, 1, cv2.LINE_AA)
 
-    # Baris 1: data target
-    put_text_with_shadow(img,
-        f"{T1_INFO}    |    {T2_INFO}",
-        (10, h - FOOTER_H + 18), FONT_SMALL, 0.40, COLOR_YELLOW, 1)
+        # Label kandidat di kiri ATAS box (teks kecil, warna merah)
+        lbl = k.get("label", "")
+        if lbl:
+            (lw, lh), _ = cv2.getTextSize(lbl, F, 0.46, 1)
+            # background label transparan
+            lab_overlay = img.copy()
+            cv2.rectangle(lab_overlay, (x1, y1 - lh - 6), (x1 + lw + 6, y1), BLACK, -1)
+            img = cv2.addWeighted(lab_overlay, 0.55, img, 0.45, 0)
+            cv2.putText(img, lbl, (x1 + 3, y1 - 4), F, 0.46, RED, 1, cv2.LINE_AA)
 
-    # Baris 2: segitiga + encoder
-    put_text_with_shadow(img,
-        f"{JARAK_T1T2}    |    {ENCODER_INFO}",
-        (10, h - FOOTER_H + 36), FONT_SMALL, 0.37, COLOR_CYAN, 1)
+        # Label gesture di kiri BAWAH box
+        gest = k.get("gesture", "")
+        if gest:
+            cv2.putText(img, gest, (x1 + 4, y2 - 6), F, 0.44, RED, 1, cv2.LINE_AA)
 
-    # Baris 3: keterangan event + status
-    put_text_with_shadow(img,
-        f"[EVENT] {cfg['keterangan']}",
-        (10, h - FOOTER_H + 54), FONT_SMALL, 0.40, COLOR_WHITE, 1)
-    put_text_with_shadow(img,
-        f"Misi: {STATUS_MISI}",
-        (10, h - FOOTER_H + 68), FONT_SMALL, 0.37, (160,255,160), 1)
+        # Dot centroid merah kecil di tengah box
+        cx = (x1 + x2) // 2
+        cy = (y1 + y2) // 2
+        cv2.circle(img, (cx, cy), 5, RED, -1, cv2.LINE_AA)
+        cv2.circle(img, (cx, cy), 5, WHITE, 1, cv2.LINE_AA)   # ring putih tipis
 
-    # ── WATERMARK (diagonal, tipis) ──────────────────────────────
-    wm_img  = img.copy()
-    wm_text = f"percobaan_20261118_015047  |  Skripsi Navigasi Robot Diferensial"
-    cv2.putText(wm_img, wm_text,
-        (int(w*0.04), int(h*0.55)),
-        FONT_SMALL, 0.45, (200,200,200), 1, cv2.LINE_AA)
-    img = cv2.addWeighted(wm_img, 0.18, img, 0.82, 0)
+    # ── 4. TEKS POJOK KIRI BAWAH ──────────────────────────────────
+    enc_text = f"Percobaan {PERCOBAAN_NO} | ENC L:{cfg['enc_l']} | R:{cfg['enc_r']}"
+    shadow_text(img, enc_text, (8, h - 10), F, 0.42, WHITE)
 
-    # Simpan kembali (overwrite file asli)
+    # ── 5. TIMESTAMP POJOK KANAN BAWAH (kuning) ───────────────────
+    ts = f"{cfg['ts']}  {TIMESTAMP_STR}"
+    (tw, _), _ = cv2.getTextSize(ts, F, 0.40, 1)
+    shadow_text(img, ts, (w - tw - 8, h - 10), F, 0.40, YELLOW)
+
+    # Simpan (overwrite)
     cv2.imwrite(str(src_path), img, [cv2.IMWRITE_PNG_COMPRESSION, 3])
     print(f"  [OK] {src_path.name}")
 
@@ -253,13 +222,12 @@ def annotate_image(src_path: Path, cfg: dict) -> None:
 if __name__ == "__main__":
     base = Path(__file__).parent / "foto"
     print(f"\nFolder : {base}")
-    print(f"Target : {len(FOTO_CONFIG)} file foto akan dianotasi\n")
-
+    print(f"Target : {len(FOTO_CONFIG)} foto\n")
     for fname, cfg in FOTO_CONFIG.items():
         fpath = base / fname
         if fpath.exists():
             annotate_image(fpath, cfg)
         else:
-            print(f"  [MISS] {fname} tidak ditemukan, dilewati.")
+            print(f"  [MISS] {fname} — tidak ditemukan")
+    print("\nSelesai!")
 
-    print("\nSelesai! Semua foto sudah dianotasi.")
